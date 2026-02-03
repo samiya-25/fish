@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fish Market</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">🐟 Fish Market</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="py-5 text-center" style="background-color:#ddb892;">
+    <div class="container">
+        <h1 class="fw-bold" style="color:#7f5539;">Fresh Fish Delivered Daily</h1>
+        <p class="lead" style="color:#9c6644;">
+            Premium quality seafood straight from the coast to your kitchen
+        </p>
+        <a href="#" class="btn btn-lg btn-primary mt-3">Shop Now</a>
+    </div>
+</section>
+
+<!-- Product Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="color:#7f5539;">Available Fish</h2>
+
+    <div class="row">
+        {% for fish in fishes %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                {% if fish.image %}
+                <img src="{{ fish.image.url }}" class="card-img-top" alt="{{ fish.name }}">
+                {% else %}
+                <img src="{% static 'images/fish-placeholder.jpg' %}" class="card-img-top" alt="Fish">
+                {% endif %}
+
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ fish.name }}</h5>
+                    <p class="card-text">{{ fish.description|truncatewords:15 }}</p>
+                    <p class="fw-bold">₹ {{ fish.price }} / kg</p>
+                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No fish available right now 🐠</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center py-3" style="background-color:#9c6644; color:#e6ccb2;">
+    <p class="mb-0">© 2026 Fish Market | Fresh & Trusted</p>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
