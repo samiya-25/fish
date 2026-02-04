@@ -23,10 +23,14 @@
 
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Shop</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Cart</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                <a href="{% url 'home' %}">Home</a> 
+
+                <a href="{% url 'shop' %}">Shop</a>
+
+                <a href="{% url 'cart' %}">Cart</a>
+                
+                <a href="{% url 'login' %}">Login</a>
+
             </ul>
         </div>
     </div>
@@ -61,7 +65,8 @@
                     <h5 class="card-title">{{ fish.name }}</h5>
                     <p class="card-text">{{ fish.description|truncatewords:15 }}</p>
                     <p class="fw-bold">₹ {{ fish.price }} / kg</p>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                    <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
+                        Add to Cart</a>
                 </div>
             </div>
         </div>
