@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5 text-center">
+
+    <h2 style="color:#7f5539;">Order placed successfully 🎉</h2>
+
+    <p class="mt-3">Thank you for shopping with Fish Market 🐟</p>
+
+    <h4 class="mt-3">Total Paid: ₹ {{ total }}</h4>
+
+    <a href="{% url 'shop' %}" class="btn btn-success mt-4">
+        Continue Shopping
+    </a>
+
+</div>
+
+{% endblock %}
