@@ -1,6 +1,15 @@
 from django.shortcuts import render, redirect
-from .models import Fish, Order, OrderItem
+from .models import Fish, FishCategory, Order, OrderItem
+from django.contrib import messages
 from .forms import CheckoutForm
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'my_orders.html', {'orders': orders})
+
 
 def home(request):
     fishes = Fish.objects.all()
@@ -9,18 +18,55 @@ def home(request):
 
 def shop(request):
     fishes = Fish.objects.all()
-    return render(request, 'shop.html', {'fishes': fishes})
+
+    search_query = request.GET.get('search')
+    category = request.GET.get('category')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
+    if search_query:
+        fishes = fishes.filter(name__icontains=search_query)
+
+    if category:
+        fishes = fishes.filter(category__id=category)
+
+    if min_price:
+        fishes = fishes.filter(price__gte=min_price)
+
+    if max_price:
+        fishes = fishes.filter(price__lte=max_price)
+
+    categories = FishCategory.objects.all()
+
+    return render(request, 'shop.html', {
+        'fishes': fishes,
+        'categories': categories
+    })
+
 
 
 def add_to_cart(request, fish_id):
     cart = request.session.get('cart', {})
 
-    if str(fish_id) in cart:
-        cart[str(fish_id)] += 1
-    else:
-        cart[str(fish_id)] = 1
+    fish = Fish.objects.get(id=fish_id)
 
+    # current quantity already in cart
+    current_qty = cart.get(str(fish_id), 0)
+
+    # stock check BEFORE adding
+    if fish.stock <= 0:
+        messages.error(request, "Item is out of stock")
+        return redirect('shop')
+
+    if current_qty >= fish.stock:
+        messages.error(request, f"Only {fish.stock} items available in stock")
+        return redirect('shop')
+
+    # safe to add
+    cart[str(fish_id)] = current_qty + 1
     request.session['cart'] = cart
+
+    messages.success(request, f"{fish.name} added to cart 🛒")
     return redirect('cart')
 
 
@@ -123,6 +169,16 @@ def checkout(request):
             request.session['last_total'] = float(total)
 
 
+            for item in cart_items:
+              fish = item.fish
+              qty = item.quantity
+
+            if fish.stock >= qty:
+              fish.stock -= qty
+              fish.save()
+
+
+
 
             # clear cart after order
             request.session['cart'] = {}
@@ -140,5 +196,7 @@ def checkout_success(request):
     return render(request, 'checkout_success.html', {'total': total})
 
 
+def orders(request):
+    return render(request, 'orders.html')
 
 

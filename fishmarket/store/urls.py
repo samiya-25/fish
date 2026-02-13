@@ -11,5 +11,7 @@ urlpatterns = [
     path('decrease/<int:fish_id>/', views.decrease_quantity, name='decrease_quantity'),
     path('checkout/', views.checkout, name='checkout'),
     path('checkout-success/', views.checkout_success, name='checkout_success'),
+    path('my-orders/', views.my_orders, name='my_orders'),
+    path('orders/', views.orders, name='orders'),
 
 ]

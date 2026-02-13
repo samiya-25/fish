@@ -1,30 +1,78 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Shop | Fish Market</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body style="background-color:#e6ccb2;">
-
 
 <div class="container my-5">
+
     <h2 class="text-center mb-4" style="color:#7f5539;">Shop Fresh Fish</h2>
 
+    <!-- 🔍 SEARCH + FILTER FORM -->
+    <form method="get" class="mb-4">
+        <div class="row">
+
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control" placeholder="Search fish...">
+            </div>
+
+            <div class="col-md-3">
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <input type="number" name="min_price" class="form-control" placeholder="Min Price">
+            </div>
+
+            <div class="col-md-2">
+                <input type="number" name="max_price" class="form-control" placeholder="Max Price">
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-dark w-100">Filter</button>
+            </div>
+
+        </div>
+    </form>
+    <!-- 🔍 END FILTER FORM -->
+
+
+    <!-- 🐟 PRODUCT GRID -->
     <div class="row">
         {% for fish in fishes %}
         <div class="col-md-4 mb-4">
             <div class="card shadow h-100" style="background-color:#ddb892;">
                 <img src="{{ fish.image.url }}" class="card-img-top">
+
                 <div class="card-body text-center">
                     <h5>{{ fish.name }}</h5>
+
                     <p>₹ {{ fish.price }} / kg</p>
-                    <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
-                        Add to Cart
-                    </a>
+
+                    <!-- 🧾 STOCK DISPLAY -->
+                    <p>
+                        Stock:
+                        {% if fish.stock > 0 %}
+                            <span class="text-success">{{ fish.stock }} available</span>
+                        {% else %}
+                            <span class="text-danger">Out of stock</span>
+                        {% endif %}
+                    </p>
+
+                    <!-- 🛒 ADD TO CART BUTTON CONTROL -->
+                    {% if fish.stock > 0 %}
+                        <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
+                            Add to Cart
+                        </a>
+                    {% else %}
+                        <button class="btn btn-danger" disabled>
+                            Out of Stock
+                        </button>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
@@ -32,9 +80,7 @@
         <p class="text-center">No products available 🐠</p>
         {% endfor %}
     </div>
-</div>
 
-</body>
-</html>
+</div>
 
 {% endblock %}
