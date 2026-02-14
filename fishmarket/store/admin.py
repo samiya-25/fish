@@ -14,8 +14,7 @@ def export_orders_csv(modeladmin, request, queryset):
     response['Content-Disposition'] = 'attachment; filename="orders.csv"'
 
     writer = csv.writer(response)
-    
-    # header row
+
     writer.writerow([
         'Order ID',
         'Customer',
@@ -42,16 +41,17 @@ def export_orders_csv(modeladmin, request, queryset):
 export_orders_csv.short_description = "Export selected orders to CSV"
 
 
-
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_name', 'phone', 'city', 'payment_method', 'total_amount', 'created_at')
+    inlines = [OrderItemInline]
     actions = [export_orders_csv]
 
 
+# ✅ KEEP ONLY THIS Fish admin
+@admin.register(Fish)
 class FishAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'stock')
+    list_display = ['name', 'price', 'stock', 'available']
 
 
 admin.site.register(FishCategory)
-admin.site.register(Fish, FishAdmin)

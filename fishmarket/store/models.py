@@ -16,6 +16,15 @@ class Fish(models.Model):
     stock = models.PositiveIntegerField(default=0)
     description = models.TextField()
     available = models.BooleanField(default=True)
+    stock = models.PositiveIntegerField(default=0)
+
+
+    def save(self, *args, **kwargs):
+        if self.stock == 0:
+            self.available = False
+        else:
+            self.available = True
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

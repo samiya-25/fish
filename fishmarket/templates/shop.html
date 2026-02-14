@@ -49,29 +49,19 @@
 
                 <div class="card-body text-center">
                     <h5>{{ fish.name }}</h5>
+<p>₹ {{ fish.price }} / kg</p>
 
-                    <p>₹ {{ fish.price }} / kg</p>
-
-                    <!-- 🧾 STOCK DISPLAY -->
-                    <p>
-                        Stock:
-                        {% if fish.stock > 0 %}
-                            <span class="text-success">{{ fish.stock }} available</span>
-                        {% else %}
-                            <span class="text-danger">Out of stock</span>
-                        {% endif %}
-                    </p>
+{% if fish.stock > 0 %}
+    <p class="text-success">In Stock ({{ fish.stock }})</p>
+    <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
+        Add to Cart
+    </a>
+{% else %}
+    <p class="text-danger">Out of Stock</p>
+    <button class="btn btn-secondary" disabled>Unavailable</button>
+{% endif %}
 
                     <!-- 🛒 ADD TO CART BUTTON CONTROL -->
-                    {% if fish.stock > 0 %}
-                        <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
-                            Add to Cart
-                        </a>
-                    {% else %}
-                        <button class="btn btn-danger" disabled>
-                            Out of Stock
-                        </button>
-                    {% endif %}
 
                 </div>
             </div>

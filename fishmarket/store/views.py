@@ -47,27 +47,24 @@ def shop(request):
 
 def add_to_cart(request, fish_id):
     cart = request.session.get('cart', {})
-
     fish = Fish.objects.get(id=fish_id)
 
-    # current quantity already in cart
-    current_qty = cart.get(str(fish_id), 0)
-
-    # stock check BEFORE adding
     if fish.stock <= 0:
-        messages.error(request, "Item is out of stock")
+        messages.error(request, "Item out of stock")
         return redirect('shop')
 
-    if current_qty >= fish.stock:
-        messages.error(request, f"Only {fish.stock} items available in stock")
-        return redirect('shop')
+    qty = cart.get(str(fish_id), 0)
 
-    # safe to add
-    cart[str(fish_id)] = current_qty + 1
+    # prevent exceeding stock
+    if qty >= fish.stock:
+        messages.error(request, "Maximum stock reached")
+        return redirect('cart')
+
+    cart[str(fish_id)] = qty + 1
     request.session['cart'] = cart
 
-    messages.success(request, f"{fish.name} added to cart 🛒")
     return redirect('cart')
+
 
 
 def cart(request):
@@ -120,7 +117,6 @@ def decrease_quantity(request, fish_id):
     request.session['cart'] = cart
     return redirect('cart')
 
-
 def checkout(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -145,6 +141,16 @@ def checkout(request):
             'total_price': item_total
         })
 
+
+        # 🔴 VERIFY STOCK BEFORE SHOWING CHECKOUT
+        for item in cart_items:
+         fish = item['fish']
+         qty = item['quantity']
+
+        if fish.stock < qty:
+           messages.error(request, f"{fish.name} stock is not available")
+           return redirect('cart')
+
     form = CheckoutForm()
 
     if request.method == 'POST':
@@ -155,30 +161,25 @@ def checkout(request):
             order.total_amount = total
             order.save()
 
+
             # Save Order Items
-            for fish_id, quantity in cart.items():
-                fish = Fish.objects.get(id=fish_id)
+            for item in cart_items:
+                fish = item['fish']
+                qty = item['quantity']
 
                 OrderItem.objects.create(
                     order=order,
                     fish_name=fish.name,
-                    quantity=quantity,
+                    quantity=qty,
                     price=fish.price
                 )
 
+                # reduce stock
+                if fish.stock >= qty:
+                    fish.stock -= qty
+                    fish.save()
+
             request.session['last_total'] = float(total)
-
-
-            for item in cart_items:
-              fish = item.fish
-              qty = item.quantity
-
-            if fish.stock >= qty:
-              fish.stock -= qty
-              fish.save()
-
-
-
 
             # clear cart after order
             request.session['cart'] = {}
