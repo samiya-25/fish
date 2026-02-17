@@ -2,55 +2,209 @@
 {% load static %}
 {% block content %}
 
+<style>
+    :root {
+        --primary: #219ebc;
+        --secondary: #8ecae6;
+        --dark: #023047;
+        --accent: #ffb703;
+        --highlight: #fb8500;
+    }
+
+    /* CART TITLE */
+    .cart-title {
+        font-size: 2.3rem;
+        font-weight: 700;
+        color: var(--secondary);
+        text-shadow: 0 0 18px rgba(142, 202, 230, 0.5);
+        margin-bottom: 35px;
+    }
+
+    /* GLASS TABLE */
+    .cart-table {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+    }
+
+    .cart-table thead {
+        background: rgba(2, 48, 71, 0.8);
+        color: var(--secondary);
+        text-shadow: 0 0 8px rgba(142, 202, 230, 0.4);
+    }
+
+    .cart-table th,
+    .cart-table td {
+        padding: 16px;
+        vertical-align: middle;
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .cart-table tbody tr {
+        transition: 0.25s ease;
+    }
+
+    .cart-table tbody tr:hover {
+        background: rgba(33, 158, 188, 0.08);
+    }
+
+    /* QUANTITY BUTTONS */
+    .qty-btn {
+        border: none;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        margin: 0 6px;
+        transition: 0.3s;
+    }
+
+    .minus-btn {
+        background: #fb8500;
+        color: #023047;
+        box-shadow: 0 0 10px rgba(251, 133, 0, 0.6);
+    }
+
+    .plus-btn {
+        background: #219ebc;
+        color: white;
+        box-shadow: 0 0 10px rgba(33, 158, 188, 0.6);
+    }
+
+    .qty-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .max-btn {
+        background: gray;
+        color: white;
+        border-radius: 8px;
+        padding: 6px 12px;
+    }
+
+    /* REMOVE BUTTON */
+    .remove-btn {
+        background: transparent;
+        border: 1px solid #ffb703;
+        color: #ffb703;
+        border-radius: 20px;
+        padding: 6px 14px;
+        transition: 0.3s;
+    }
+
+    .remove-btn:hover {
+        background: #ffb703;
+        color: #023047;
+        box-shadow: 0 0 12px rgba(255, 183, 3, 0.7);
+    }
+
+    /* TOTAL PANEL */
+    .total-panel {
+        margin-top: 35px;
+        padding: 25px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: right;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .total-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-shadow: 0 0 12px rgba(255, 183, 3, 0.6);
+    }
+
+    /* CHECKOUT BUTTON */
+    .checkout-btn {
+        margin-top: 15px;
+        background: linear-gradient(120deg, #ffb703, #fb8500);
+        border: none;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-weight: 600;
+        color: #023047;
+        box-shadow:
+            0 0 18px rgba(255, 183, 3, 0.6),
+            0 0 35px rgba(255, 133, 0, 0.4);
+        transition: 0.3s;
+    }
+
+    .checkout-btn:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            0 0 25px rgba(255, 183, 3, 0.9),
+            0 0 45px rgba(255, 133, 0, 0.6);
+    }
+
+    /* EMPTY CART */
+    .empty-cart {
+        text-align: center;
+        font-size: 1.3rem;
+        color: var(--secondary);
+        margin-top: 60px;
+        text-shadow: 0 0 12px rgba(142, 202, 230, 0.6);
+    }
+</style>
+
 <div class="container my-5">
-    <h2 class="text-center mb-4" style="color:#7f5539;">Your Cart</h2>
+
+    <h2 class="text-center cart-title">Your Cart</h2>
 
     {% if cart_items %}
-    <table class="table table-bordered bg-light">
-        <thead>
-            <tr>
-                <th>Fish</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+    <div class="table-responsive cart-table">
+        <table class="table text-white mb-0">
+            <thead>
+                <tr>
+                    <th>Fish</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            {% for item in cart_items %}
-            <tr>
-                <td>{{ item.fish.name }}</td>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.fish.name }}</td>
 
-                <td>
-    <a href="{% url 'decrease_quantity' item.fish.id %}" class="btn btn-danger">-</a>
-    {{ item.quantity }}
+                    <td>
+                        <a href="{% url 'decrease_quantity' item.fish.id %}" class="qty-btn minus-btn">-</a>
+                        <strong>{{ item.quantity }}</strong>
 
-    {% if item.quantity < item.fish.stock %}
-        <a href="{% url 'increase_quantity' item.fish.id %}" class="btn btn-success">+</a>
-    {% else %}
-        <button class="btn btn-secondary" disabled>Max</button>
-    {% endif %}
-</td>
+                        {% if item.quantity < item.fish.stock %} <a href="{% url 'increase_quantity' item.fish.id %}"
+                            class="qty-btn plus-btn">+</a>
+                            {% else %}
+                            <button class="max-btn" disabled>Max</button>
+                            {% endif %}
+                    </td>
 
-                <td>₹ {{ item.total_price }}</td>
+                    <td>₹ {{ item.total_price }}</td>
 
-                <td>
-                    <a href="{% url 'remove_from_cart' item.fish.id %}" class="btn btn-sm btn-danger">
-                        Remove
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <td>
+                        <a href="{% url 'remove_from_cart' item.fish.id %}" class="remove-btn">
+                            Remove
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <div class="text-end">
-        <h5>Total: ₹ {{ total }}</h5>
-        <a href="{% url 'checkout' %}" class="btn btn-success">Checkout</a>
+    <div class="total-panel">
+        <div class="total-text">Total: ₹ {{ total }}</div>
+        <a href="{% url 'checkout' %}" class="checkout-btn">Proceed to Checkout</a>
     </div>
 
     {% else %}
-    <p class="text-center">Your cart is empty 🛒</p>
+    <div class="empty-cart">
+        Your cart is empty 🛒
+    </div>
     {% endif %}
 </div>
 

@@ -1,27 +1,144 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<style>
+    :root {
+        --primary: #219ebc;
+        --secondary: #8ecae6;
+        --dark: #023047;
+        --accent: #ffb703;
+        --highlight: #fb8500;
+    }
+
+    /* PAGE TITLE */
+    .orders-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 35px;
+        color: var(--secondary);
+        text-shadow: 0 0 18px rgba(142, 202, 230, 0.5);
+    }
+
+    /* ORDER CARD */
+    .order-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+        border-radius: 20px;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        margin-bottom: 30px;
+        transition: 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-6px);
+        box-shadow:
+            0 0 25px rgba(33, 158, 188, 0.5),
+            0 0 45px rgba(33, 158, 188, 0.3);
+    }
+
+    .order-id {
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 1.1rem;
+    }
+
+    .order-meta {
+        color: #cfefff;
+        margin-top: 8px;
+        font-size: 0.95rem;
+    }
+
+    /* BADGES */
+    .badge-payment {
+        background: rgba(33, 158, 188, 0.2);
+        color: var(--secondary);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(33, 158, 188, 0.5);
+        margin-left: 10px;
+    }
+
+    .badge-total {
+        background: rgba(255, 183, 3, 0.15);
+        color: var(--accent);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(255, 183, 3, 0.5);
+        margin-left: 10px;
+    }
+
+    /* ITEMS LIST */
+    .items-title {
+        margin-top: 18px;
+        font-weight: 600;
+        color: var(--secondary);
+        text-shadow: 0 0 10px rgba(142, 202, 230, 0.5);
+    }
+
+    .item-list {
+        margin-top: 10px;
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .item-list li {
+        background: rgba(255, 255, 255, 0.04);
+        margin-bottom: 8px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: #d9f5ff;
+    }
+
+    /* EMPTY STATE */
+    .empty-orders {
+        text-align: center;
+        margin-top: 70px;
+        font-size: 1.2rem;
+        color: var(--secondary);
+        text-shadow: 0 0 12px rgba(142, 202, 230, 0.6);
+    }
+</style>
+
 <div class="container mt-5">
-    <h2 class="mb-4">My Orders</h2>
+
+    <h2 class="orders-title">My Orders</h2>
 
     {% if orders %}
-        {% for order in orders %}
-        <div class="card mb-4 p-3 shadow-sm">
-            <h5>Order ID: {{ order.id }}</h5>
-            <p><strong>Date:</strong> {{ order.created_at }}</p>
-            <p><strong>Total:</strong> ₹ {{ order.total_amount }}</p>
-            <p><strong>Payment:</strong> {{ order.payment_method }}</p>
+    {% for order in orders %}
+    <div class="order-card">
 
-            <h6>Items:</h6>
-            <ul>
-                {% for item in order.orderitem_set.all %}
-                    <li>{{ item.fish_name }} — {{ item.quantity }} × ₹ {{ item.price }}</li>
-                {% endfor %}
-            </ul>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="order-id">Order ID: {{ order.id }}</div>
+            <div>
+                <span class="badge-total">₹ {{ order.total_amount }}</span>
+                <span class="badge-payment">{{ order.payment_method }}</span>
+            </div>
         </div>
-        {% endfor %}
+
+        <div class="order-meta">
+            <strong>Date:</strong> {{ order.created_at }}
+        </div>
+
+        <div class="items-title">Items</div>
+        <ul class="item-list">
+            {% for item in order.orderitem_set.all %}
+            <li>
+                {{ item.fish_name }} — {{ item.quantity }} × ₹ {{ item.price }}
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+    {% endfor %}
     {% else %}
-        <p>You haven't placed any orders yet.</p>
+    <div class="empty-orders">
+        You haven't placed any orders yet 🧾
+    </div>
     {% endif %}
 </div>
 

@@ -2,42 +2,201 @@
 {% block content %}
 {% load static %}
 
-<!-- Hero Section -->
-<section class="py-5 text-center" style="background-color:#ddb892;">
+<style>
+    :root {
+        --primary: #219ebc;
+        --secondary: #8ecae6;
+        --dark: #023047;
+        --accent: #ffb703;
+        --highlight: #fb8500;
+    }
+
+    body {
+        background: radial-gradient(circle at top, #023047 0%, #021c2a 60%, #01151f 100%);
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* HERO */
+    .hero-section {
+        padding: 120px 0 90px;
+        position: relative;
+        text-align: center;
+    }
+
+    .hero-section h1 {
+        font-size: 3.2rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: var(--secondary);
+        text-shadow:
+            0 0 10px rgba(142,202,230,0.6),
+            0 0 25px rgba(33,158,188,0.5);
+    }
+
+    .hero-section p {
+        color: #d7f3ff;
+        font-size: 1.15rem;
+        margin-top: 15px;
+    }
+
+    .cta-btn {
+        margin-top: 30px;
+        background: linear-gradient(120deg, #ffb703, #fb8500);
+        border: none;
+        padding: 14px 36px;
+        font-size: 1.1rem;
+        border-radius: 40px;
+        font-weight: 600;
+        color: #023047;
+        letter-spacing: 0.5px;
+        box-shadow:
+            0 0 15px rgba(255,183,3,0.6),
+            0 0 30px rgba(255,133,0,0.3);
+        transition: all 0.35s ease;
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow:
+            0 0 25px rgba(255,183,3,0.9),
+            0 0 45px rgba(255,133,0,0.6);
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 50px;
+        color: var(--secondary);
+        text-shadow: 0 0 18px rgba(142,202,230,0.5);
+    }
+
+    /* PRODUCT GRID */
+    .fish-card {
+        position: relative;
+        border-radius: 22px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: all 0.35s ease;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+    }
+
+    .fish-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow:
+            0 0 25px rgba(33,158,188,0.6),
+            0 0 45px rgba(33,158,188,0.3);
+    }
+
+    /* IMAGE EFFECT */
+    .fish-img {
+        height: 240px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .fish-card:hover .fish-img {
+        transform: scale(1.1);
+    }
+
+    /* CARD CONTENT */
+    .card-body {
+        padding: 26px;
+        text-align: center;
+    }
+
+    .card-body h5 {
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 10px;
+        font-size: 1.25rem;
+    }
+
+    .card-body p {
+        color: #cfefff;
+        font-size: 0.95rem;
+    }
+
+    .price {
+        margin-top: 12px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--highlight);
+        text-shadow: 0 0 10px rgba(251,133,0,0.5);
+    }
+
+    /* ADD TO CART */
+    .add-btn {
+        margin-top: 18px;
+        background: transparent;
+        border: 1px solid var(--primary);
+        color: var(--secondary);
+        padding: 10px 22px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 12px rgba(33,158,188,0.4);
+    }
+
+    .add-btn:hover {
+        background: var(--primary);
+        color: white;
+        box-shadow:
+            0 0 18px rgba(33,158,188,0.8),
+            0 0 35px rgba(33,158,188,0.5);
+    }
+
+    /* EMPTY STATE */
+    .empty-text {
+        text-align: center;
+        font-size: 1.2rem;
+        color: var(--secondary);
+        text-shadow: 0 0 10px rgba(142,202,230,0.6);
+    }
+</style>
+
+<!-- HERO -->
+<section class="hero-section">
     <div class="container">
-        <h1 class="fw-bold" style="color:#7f5539;">Fresh Fish Delivered Daily</h1>
-        <p class="lead" style="color:#9c6644;">
-            Premium quality seafood straight from the coast to your kitchen
-        </p>
-        <a href="{% url 'shop' %}" class="btn btn-lg btn-primary mt-3">Shop Now</a>
+        <h1>Fresh Fish Delivered Daily</h1>
+        <p>Premium quality seafood straight from the coast to your kitchen</p>
+        <a href="{% url 'shop' %}" class="cta-btn">Shop Now</a>
     </div>
 </section>
 
-<!-- Product Section -->
+<!-- PRODUCTS -->
 <div class="container my-5">
-    <h2 class="text-center mb-4" style="color:#7f5539;">Available Fish</h2>
+    <h2 class="text-center section-title">Available Fish</h2>
 
     <div class="row">
         {% for fish in fishes %}
         <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100">
+            <div class="fish-card h-100">
+
                 {% if fish.image %}
-                <img src="{{ fish.image.url }}" class="card-img-top" alt="{{ fish.name }}">
+                <img src="{{ fish.image.url }}" class="fish-img" alt="{{ fish.name }}">
                 {% else %}
-                <img src="{% static 'images/fish-placeholder.jpg' %}" class="card-img-top" alt="Fish">
+                <img src="{% static 'images/fish-placeholder.jpg' %}" class="fish-img" alt="Fish">
                 {% endif %}
 
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ fish.name }}</h5>
-                    <p class="card-text">{{ fish.description|truncatewords:15 }}</p>
-                    <p class="fw-bold">₹ {{ fish.price }} / kg</p>
-                    <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
-                        Add to Cart</a>
+                <div class="card-body">
+                    <h5>{{ fish.name }}</h5>
+                    <p>{{ fish.description|truncatewords:15 }}</p>
+                    <div class="price">₹ {{ fish.price }} / kg</div>
+
+                    <a href="{% url 'add_to_cart' fish.id %}" class="add-btn">
+                        Add to Cart
+                    </a>
                 </div>
+
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No fish available right now 🐠</p>
+        <p class="empty-text">No fish available right now 🐠</p>
         {% endfor %}
     </div>
 </div>

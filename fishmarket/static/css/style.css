@@ -1,0 +1,60 @@
+/* ===============================
+   FAIRY CURSOR BACKGROUND LAYER
+   =============================== */
+
+#fairy-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    /* stays behind everything */
+    pointer-events: none;
+    /* does not block clicks */
+    overflow: hidden;
+}
+
+/* Canvas created by Three.js */
+#fairy-cursor canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ===============================
+   MAIN WEBSITE CONTENT ABOVE CURSOR
+   =============================== */
+
+body {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar,
+.container,
+.card,
+footer,
+section,
+main {
+    position: relative;
+    z-index: 2;
+}
+
+/* Optional: make sure images & text never go behind stars */
+img,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+a,
+button {
+    position: relative;
+    z-index: 2;
+}

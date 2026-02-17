@@ -1,55 +1,136 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Fish Market</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #219ebc;
+            --secondary: #8ecae6;
+            --dark: #023047;
+            --accent: #ffb703;
+            --highlight: #fb8500;
+        }
+
+        /* GLOBAL BACKGROUND */
         body {
-            background-color: #e6ccb2;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #023047 0%, #021c2a 60%, #01151f 100%);
+            color: white;
         }
 
+        /* NAVBAR */
         .navbar {
-            background-color: #7f5539;
+            background: rgba(2, 48, 71, 0.7);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .navbar a {
-            color: white !important;
+        /* BRAND */
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--secondary) !important;
+            text-shadow: 0 0 12px rgba(142, 202, 230, 0.6);
+        }
+
+        /* NAV LINKS */
+        .nav-link {
+            color: #cfefff !important;
+            margin-left: 18px;
+            position: relative;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
 
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        /* NEON UNDERLINE EFFECT */
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(90deg, #ffb703, #fb8500);
+            transition: 0.3s ease;
+            box-shadow: 0 0 8px rgba(255, 183, 3, 0.7);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* ACTIVE LINK */
+        .active-link {
+            color: var(--accent) !important;
+            text-shadow: 0 0 12px rgba(255, 183, 3, 0.6);
+        }
+
+        /* GLOBAL BUTTON STYLE */
         .btn-primary {
-            background-color: #9c6644;
+            background: linear-gradient(120deg, #ffb703, #fb8500);
             border: none;
+            border-radius: 30px;
+            color: #023047;
+            font-weight: 600;
+            box-shadow: 0 0 12px rgba(255, 183, 3, 0.5);
+            transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #7f5539;
+            transform: translateY(-2px);
+            box-shadow:
+                0 0 18px rgba(255, 183, 3, 0.8),
+                0 0 30px rgba(255, 133, 0, 0.5);
+        }
+
+        /* PAGE CONTAINER */
+        .page-container {
+            margin-top: 30px;
+            padding-bottom: 60px;
         }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color:#7f5539;">
-    <div class="container">
-        <a class="navbar-brand text-white fw-bold" href="{% url 'home' %}">
-            🐟 Fish Market
-        </a>
 
-        <div class="ms-auto">
-            <a href="{% url 'home' %}" class="text-white me-3">Home</a>
-            <a href="{% url 'shop' %}" class="text-white me-3">Shop</a>
-            <a href="{% url 'cart' %}" class="text-white me-3">Cart</a>
-            <a href="{% url 'my_orders' %}" class="text-white me-3">My Orders</a>
-            <a href="{% url 'checkout' %}" class="text-white">Checkout</a>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+
+            <a class="navbar-brand" href="{% url 'home' %}">
+                🐟 Fish Market
+            </a>
+
+            <div class="ms-auto">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'shop' %}" class="nav-link">Shop</a>
+                <a href="{% url 'cart' %}" class="nav-link">Cart</a>
+                <a href="{% url 'my_orders' %}" class="nav-link">My Orders</a>
+                <a href="{% url 'checkout' %}" class="nav-link">Checkout</a>
+            </div>
+
         </div>
+    </nav>
+
+    <!-- PAGE CONTENT -->
+    <div class="container page-container">
+        {% block content %}
+        {% endblock %}
     </div>
-</nav>
 
-<div class="container mt-4">
-    {% block content %}
-    {% endblock %}
-</div>
-
+    
 </body>
+
 </html>

@@ -2,13 +2,173 @@
 {% block content %}
 {% load static %}
 
+<style>
+    :root {
+        --primary: #219ebc;
+        --secondary: #8ecae6;
+        --dark: #023047;
+        --accent: #ffb703;
+        --highlight: #fb8500;
+    }
+
+    /* PAGE TITLE */
+    .shop-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--secondary);
+        text-shadow: 0 0 18px rgba(142,202,230,0.5);
+    }
+
+    /* FILTER PANEL */
+    .filter-panel {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(14px);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 40px;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+
+    .filter-panel input,
+    .filter-panel select {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: #d9f5ff;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .filter-panel input:focus,
+    .filter-panel select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 12px rgba(33,158,188,0.6);
+    }
+
+    .filter-btn {
+        background: linear-gradient(120deg, #ffb703, #fb8500);
+        border: none;
+        border-radius: 30px;
+        font-weight: 600;
+        color: #023047;
+        box-shadow:
+            0 0 15px rgba(255,183,3,0.6),
+            0 0 30px rgba(255,133,0,0.4);
+        transition: 0.3s;
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 0 25px rgba(255,183,3,0.9),
+            0 0 45px rgba(255,133,0,0.6);
+    }
+
+    /* PRODUCT CARD */
+    .fish-card {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(14px);
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+        transition: 0.3s ease;
+    }
+
+    .fish-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow:
+            0 0 25px rgba(33,158,188,0.6),
+            0 0 45px rgba(33,158,188,0.3);
+    }
+
+    .fish-img {
+        height: 240px;
+        width: 100%;
+        object-fit: cover;
+        transition: 0.6s ease;
+    }
+
+    .fish-card:hover .fish-img {
+        transform: scale(1.08);
+    }
+
+    .card-body h5 {
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .price {
+        color: var(--highlight);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    /* STOCK BADGE */
+    .stock {
+        font-size: 0.9rem;
+        margin-top: 6px;
+    }
+
+    .in-stock {
+        color: #8ecae6;
+        text-shadow: 0 0 8px rgba(142,202,230,0.5);
+    }
+
+    .out-stock {
+        color: #ff6b6b;
+        text-shadow: 0 0 8px rgba(255,107,107,0.5);
+    }
+
+    /* ADD TO CART */
+    .add-btn {
+        margin-top: 12px;
+        background: transparent;
+        border: 1px solid var(--primary);
+        color: var(--secondary);
+        border-radius: 30px;
+        padding: 10px 22px;
+        font-weight: 600;
+        transition: 0.3s;
+        box-shadow: 0 0 12px rgba(33,158,188,0.4);
+    }
+
+    .add-btn:hover {
+        background: var(--primary);
+        color: white;
+        box-shadow:
+            0 0 18px rgba(33,158,188,0.8),
+            0 0 35px rgba(33,158,188,0.5);
+    }
+
+    .disabled-btn {
+        background: gray;
+        border-radius: 30px;
+        padding: 10px 22px;
+        color: white;
+    }
+
+    /* EMPTY STATE */
+    .empty-products {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 60px;
+        color: var(--secondary);
+        text-shadow: 0 0 12px rgba(142,202,230,0.6);
+    }
+</style>
+
 <div class="container my-5">
 
-    <h2 class="text-center mb-4" style="color:#7f5539;">Shop Fresh Fish</h2>
+    <h2 class="shop-title">Shop Fresh Fish</h2>
 
-    <!-- 🔍 SEARCH + FILTER FORM -->
-    <form method="get" class="mb-4">
-        <div class="row">
+    <!-- FILTER -->
+    <form method="get" class="filter-panel">
+        <div class="row g-3">
 
             <div class="col-md-3">
                 <input type="text" name="search" class="form-control" placeholder="Search fish...">
@@ -32,42 +192,39 @@
             </div>
 
             <div class="col-md-2">
-                <button class="btn btn-dark w-100">Filter</button>
+                <button class="btn filter-btn w-100">Filter</button>
             </div>
 
         </div>
     </form>
-    <!-- 🔍 END FILTER FORM -->
 
-
-    <!-- 🐟 PRODUCT GRID -->
+    <!-- PRODUCTS -->
     <div class="row">
         {% for fish in fishes %}
         <div class="col-md-4 mb-4">
-            <div class="card shadow h-100" style="background-color:#ddb892;">
-                <img src="{{ fish.image.url }}" class="card-img-top">
+            <div class="fish-card h-100">
+
+                <img src="{{ fish.image.url }}" class="fish-img">
 
                 <div class="card-body text-center">
                     <h5>{{ fish.name }}</h5>
-<p>₹ {{ fish.price }} / kg</p>
+                    <div class="price">₹ {{ fish.price }} / kg</div>
 
-{% if fish.stock > 0 %}
-    <p class="text-success">In Stock ({{ fish.stock }})</p>
-    <a href="{% url 'add_to_cart' fish.id %}" class="btn btn-primary">
-        Add to Cart
-    </a>
-{% else %}
-    <p class="text-danger">Out of Stock</p>
-    <button class="btn btn-secondary" disabled>Unavailable</button>
-{% endif %}
-
-                    <!-- 🛒 ADD TO CART BUTTON CONTROL -->
-
+                    {% if fish.stock > 0 %}
+                        <div class="stock in-stock">In Stock ({{ fish.stock }})</div>
+                        <a href="{% url 'add_to_cart' fish.id %}" class="add-btn">Add to Cart</a>
+                    {% else %}
+                        <div class="stock out-stock">Out of Stock</div>
+                        <button class="disabled-btn" disabled>Unavailable</button>
+                    {% endif %}
                 </div>
+
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No products available 🐠</p>
+        <div class="empty-products">
+            No products available 🐠
+        </div>
         {% endfor %}
     </div>
 

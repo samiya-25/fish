@@ -1,74 +1,195 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container my-5">
-    <h2 class="text-center mb-4" style="color:#7f5539;">Checkout</h2>
+<style>
+    :root {
+        --primary: #219ebc;
+        --secondary: #8ecae6;
+        --dark: #023047;
+        --accent: #ffb703;
+        --highlight: #fb8500;
+    }
 
-    <div class="row">
-        <!-- Checkout Form -->
+    /* PAGE TITLE */
+    .checkout-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 35px;
+        color: var(--secondary);
+        text-shadow: 0 0 18px rgba(142, 202, 230, 0.5);
+        text-align: center;
+    }
+
+    /* GLASS FORM */
+    .checkout-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+        border-radius: 22px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .checkout-card h4 {
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    /* INPUTS */
+    .checkout-card input,
+    .checkout-card textarea,
+    .checkout-card select {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #d9f5ff;
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 6px;
+    }
+
+    .checkout-card input:focus,
+    .checkout-card textarea:focus,
+    .checkout-card select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 12px rgba(33, 158, 188, 0.6);
+    }
+
+    label {
+        margin-top: 12px;
+        font-weight: 500;
+        color: #cfefff;
+    }
+
+    /* PLACE ORDER BUTTON */
+    .place-order-btn {
+        margin-top: 18px;
+        background: linear-gradient(120deg, #ffb703, #fb8500);
+        border: none;
+        padding: 14px;
+        border-radius: 30px;
+        font-weight: 700;
+        color: #023047;
+        font-size: 1.05rem;
+        box-shadow:
+            0 0 18px rgba(255, 183, 3, 0.6),
+            0 0 35px rgba(255, 133, 0, 0.4);
+        transition: 0.3s;
+    }
+
+    .place-order-btn:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            0 0 28px rgba(255, 183, 3, 0.9),
+            0 0 45px rgba(255, 133, 0, 0.6);
+    }
+
+    /* ORDER SUMMARY */
+    .summary-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+        border-radius: 22px;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .summary-card h4 {
+        color: var(--secondary);
+        margin-bottom: 18px;
+        text-shadow: 0 0 12px rgba(142, 202, 230, 0.4);
+    }
+
+    .order-item {
+        background: rgba(255, 255, 255, 0.04);
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: #d9f5ff;
+    }
+
+    .total-price {
+        margin-top: 15px;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-align: right;
+        text-shadow: 0 0 12px rgba(255, 183, 3, 0.6);
+    }
+
+    /* EMPTY CART */
+    .empty-text {
+        text-align: center;
+        color: var(--secondary);
+        margin-top: 40px;
+    }
+</style>
+
+<div class="container my-5">
+
+    <h2 class="checkout-title">Checkout</h2>
+
+    <div class="row g-4">
+
+        <!-- SHIPPING FORM -->
         <div class="col-md-6">
-            <div class="card p-4 shadow" style="background-color:#ddb892;">
+            <div class="checkout-card">
                 <h4>Shipping Details</h4>
 
                 <form method="POST">
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <label>Full Name</label>
-                        <input type="text" name="full_name" class="form-control" required>
-                    </div>
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" class="form-control" required>
 
-                    <div class="mb-3">
-                        <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" required>
-                    </div>
+                    <label>Phone</label>
+                    <input type="text" name="phone" class="form-control" required>
 
-                    <div class="mb-3">
-                        <label>Address</label>
-                        <textarea name="address" class="form-control" required></textarea>
-                    </div>
+                    <label>Address</label>
+                    <textarea name="address" class="form-control" required></textarea>
 
-                    <div class="mb-3">
-                        <label>City</label>
-                        <input type="text" name="city" class="form-control" required>
-                    </div>
+                    <label>City</label>
+                    <input type="text" name="city" class="form-control" required>
 
-                    <div class="mb-3">
-                        <label>Payment Method</label>
-                        <select name="payment_method" class="form-control">
-                            <option value="COD">Cash on Delivery</option>
-                            <option value="ONLINE">Online Payment</option>
-                        </select>
-                    </div>
+                    <label>Payment Method</label>
+                    <select name="payment_method" class="form-control">
+                        <option value="COD">Cash on Delivery</option>
+                        <option value="ONLINE">Online Payment</option>
+                    </select>
 
-                    <button type="submit" class="btn btn-success w-100">
+                    <button type="submit" class="place-order-btn w-100">
                         Place Order
                     </button>
                 </form>
             </div>
         </div>
 
-        <!-- Order Summary -->
+        <!-- ORDER SUMMARY -->
         <div class="col-md-6">
-            <div class="card p-4 shadow bg-light">
+            <div class="summary-card">
                 <h4>Order Summary</h4>
 
                 {% if cart_items %}
-                    <ul class="list-group">
-                        {% for item in cart_items %}
-                        <li class="list-group-item d-flex justify-content-between">
-                            {{ item.fish.name }} (x{{ item.quantity }})
-                            <span>₹ {{ item.total_price }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                {% for item in cart_items %}
+                <div class="order-item">
+                    <span>{{ item.fish.name }} (x{{ item.quantity }})</span>
+                    <span>₹ {{ item.total_price }}</span>
+                </div>
+                {% endfor %}
 
-                    <h5 class="text-end mt-3">Total: ₹ {{ total }}</h5>
+                <div class="total-price">
+                    Total: ₹ {{ total }}
+                </div>
                 {% else %}
-                    <p>Your cart is empty</p>
+                <div class="empty-text">Your cart is empty</div>
                 {% endif %}
             </div>
         </div>
+
     </div>
 </div>
 
